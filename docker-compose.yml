@@ -1,0 +1,56 @@
+version: '3.5'
+services:
+    web1:
+        restart: on-failure
+        build: ./backend
+        hostname: web1
+        ports:
+            - '81:8080'
+        networks:
+            - rede-teste
+        volumes:
+            - ./backend/app:/home/code/app
+    web2:
+        restart: on-failure
+        build: ./backend
+        hostname: web2
+        ports:
+            - '82:8080'
+        networks:
+            - rede-teste
+        volumes:
+            - ./backend/app:/home/code/app
+    mysql:
+        image: company-database
+        ports:
+            - "3306:3306"
+        environment:
+            MYSQL_ROOT_PASSWORD: RootPassword
+            MYSQL_DATABASE: Company
+        networks:
+            - rede-teste
+    nginx:
+        build: ./nginx
+        ports:
+            - '80:80'
+        depends_on:
+            - web1
+            - web2
+        networks:
+            - rede-teste
+    phpmyadmin:
+        image: phpmyadmin
+        ports: 
+            - '8181:80'
+        environment:
+            PMA_HOST: mysql
+            PMA_PORT: 3306
+            PMA_USER: root 
+            PMA_PASSWORD: RootPassword
+        depends_on:
+            - mysql
+        networks:
+            - rede-teste
+networks:
+    rede-teste:
+        driver: bridge
