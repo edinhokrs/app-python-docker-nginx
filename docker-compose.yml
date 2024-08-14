@@ -4,6 +4,8 @@ services:
         restart: on-failure
         build: ./backend
         hostname: web1
+        env_file:
+            - .env
         ports:
             - '81:8080'
         networks:
@@ -14,6 +16,8 @@ services:
         restart: on-failure
         build: ./backend
         hostname: web2
+        env_file:
+            - .env
         ports:
             - '82:8080'
         networks:
@@ -22,11 +26,13 @@ services:
             - ./backend/app:/home/code/app
     mysql:
         image: company-database
+        env_file:
+            - .env
         ports:
             - "3306:3306"
         environment:
-            MYSQL_ROOT_PASSWORD: RootPassword
-            MYSQL_DATABASE: Company
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+            MYSQL_DATABASE: ${MYSQL_DATABASE}
         networks:
             - rede-teste
     nginx:
@@ -40,13 +46,15 @@ services:
             - rede-teste
     phpmyadmin:
         image: phpmyadmin
+        env_file:
+            - .env
         ports: 
             - '8181:80'
         environment:
-            PMA_HOST: mysql
-            PMA_PORT: 3306
-            PMA_USER: root 
-            PMA_PASSWORD: RootPassword
+            PMA_HOST: ${PMA_HOST}
+            PMA_PORT: ${PMA_PORT}
+            PMA_USER: ${PMA_USER}
+            PMA_PASSWORD: ${PMA_PASSWORD}
         depends_on:
             - mysql
         networks:

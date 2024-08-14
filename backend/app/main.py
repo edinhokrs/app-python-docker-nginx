@@ -1,5 +1,15 @@
 from fastapi import FastAPI
 import mysql.connector
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+userenv = os.getenv('PMA_USER')
+passwordenv = os.getenv('PMA_PASSWORD')
+hostenv = os.getenv('PMA_HOST')
+portenv = os.getenv('PMA_PORT')
+databaseenv = os.getenv('MYSQL_DATABASE')
 
 app = FastAPI()
 
@@ -10,11 +20,11 @@ async def root():
 @app.get("/employees")
 async def get_employees():
     connection = mysql.connector.connect(
-        user='root',
-        password='RootPassword',
-        host='mysql',
-        port='3306',
-        database='Company'
+        user=userenv,
+        password=passwordenv,
+        host=hostenv,
+        port=portenv,
+        database=databaseenv
     )
     print('DB connected')
     cursor = connection.cursor(dictionary=True)
